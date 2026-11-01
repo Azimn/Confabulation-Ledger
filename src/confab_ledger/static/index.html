@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<title>Confabulation Ledger | Research Laboratory</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#e9edea;background:#101714;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 86% -10%,#20352b 0%,transparent 52%),#101714}
+header{max-width:1340px;margin:auto;padding:42px 32px 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.eyebrow{text-transform:uppercase;letter-spacing:.19em;color:#94b7a3;font-size:11px;font-weight:700}h1{margin:9px 0 7px;font-family:Georgia,serif;font-size:clamp(30px,4vw,49px);font-weight:500;letter-spacing:-.035em}
+.subtitle{color:#a9b8b1;max-width:680px;line-height:1.5;margin:0;font-size:14px}.pill{padding:7px 11px;border:1px solid #3e5d4d;border-radius:30px;color:#a1c9b0;white-space:nowrap;font-size:11px;font-weight:700}
+main{max-width:1340px;margin:auto;padding:0 32px 42px}.toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 0 24px}
+label{font-size:12px;color:#c0d0c7;display:grid;gap:7px}input,select,textarea{background:#15211b;border:1px solid #35483b;border-radius:8px;color:#e6f1e7;padding:10px 11px;font:inherit;font-size:13px;min-width:0;width:100%;outline-color:#8cc9a0}textarea{resize:vertical;min-height:76px}
+.toolbar input{width:160px}.toolbar button{width:auto}.lensbox{padding:14px 17px;border-top:1px solid #33463a;background:#16211b}.lensbox select{margin-top:7px}.subhead{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9cb9a5;margin:14px 0 6px;font-weight:700}.lensbox .entry{padding:9px 0}.lensbox .entry p{margin:3px 0}.lensbox .empty{margin:4px 0 9px}.columns{display:grid;grid-template-columns:minmax(260px,1fr) minmax(280px,1.1fr) minmax(290px,1.2fr);gap:16px;align-items:start}
+.panel{border:1px solid #34483b;border-radius:13px;background:#19251f;overflow:hidden;box-shadow:0 12px 40px #0002}.panel-head{border-bottom:1px solid #33463a;padding:17px 18px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px}.panel h2{font-size:14px;letter-spacing:.015em;margin:0}.count{color:#b3c1b8;font-size:11px}.panel-body{padding:15px 17px;min-height:180px;max-height:650px;overflow:auto}
+.entry{padding:13px 0;border-bottom:1px solid #314137}.entry:last-child{border-bottom:0}.entry strong{font-size:13px;font-weight:650}.entry p{color:#b4c4b9;font-size:12px;line-height:1.55;margin:6px 0}.meta{font-size:10px;color:#91a998;letter-spacing:.035em;overflow-wrap:anywhere}
+.value{font-family:Georgia,serif;font-size:20px;color:#e7f3e6;margin-top:4px}.tag{display:inline-block;border-radius:6px;padding:4px 7px;border:1px solid #45634f;color:#a4d5b3;font-size:10px;font-weight:700;letter-spacing:.03em}.tag.PENDING{color:#eed19b;border-color:#6e6248}.tag.BELIEF_ONLY{color:#bec9ee;border-color:#525c7a}.tag.REJECTED{color:#ecaba7;border-color:#78504e}
+form{margin-top:16px;border:1px solid #34483b;border-radius:13px;padding:18px;background:#19251f}.form-title{font-size:15px;margin:0 0 14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}button{border:0;border-radius:8px;background:#9fc6a9;color:#112019;padding:11px 15px;font-size:12px;font-weight:750;cursor:pointer;width:100%}button:hover{background:#c8e9ce}.smallbutton{background:#23372b;border:1px solid #45604f;color:#d8e8dd;padding:9px 14px}button:focus-visible{outline:2px solid #f7e3a2}
+footer{max-width:1340px;margin:0 auto;padding:0 32px 38px;color:#8da297;font-size:12px;line-height:1.6}.empty{color:#849d8d;font-size:13px;line-height:1.6}.notice{color:#dbd1a3;min-height:18px;font-size:12px;padding:10px 0 0}
+@media(max-width:1020px){.columns{grid-template-columns:1fr 1fr}.panel:last-child{grid-column:1/-1}}@media(max-width:650px){main,header,footer{padding-left:17px;padding-right:17px}.columns{grid-template-columns:1fr}.panel:last-child{grid-column:auto}}
+</style>
+</head>
+<body>
+<header>
+ <div><div class="eyebrow">Narrative Systems Research / Experimental Prototype 0.1</div><h1>Confabulation Ledger</h1><p class="subtitle">A character can invent a detail. The world does not have to believe it. Inspect the boundary between generated claims, character knowledge, and accepted canon.</p></div>
+ <div class="pill">LOCAL STUDY · DETERMINISTIC POLICY</div>
+</header>
+<main>
+ <div class="toolbar"><label>World state on date<input id="at" type="date" value="1875-04-20" /></label><button class="smallbutton" id="refresh" type="button">Refresh ledger</button></div>
+ <div class="columns">
+  <section class="panel"><div class="panel-head"><h2>Active canon</h2><span class="count" id="canon-count"></span></div><div class="panel-body" id="canon"></div></section>
+  <section class="panel"><div class="panel-head"><h2>Claims and character viewpoints</h2><span class="count" id="claim-count"></span></div><div class="panel-body" id="claims"></div><div class="lensbox"><label>Inspect one character’s available perspective<select id="lens"></select></label><div id="character-view"></div></div></section>
+  <section class="panel"><div class="panel-head"><h2>Immutable event trail</h2><span class="count" id="event-count"></span></div><div class="panel-body" id="events"></div></section>
+ </div>
+ <form id="claim-form"><h2 class="form-title">Submit a structured candidate claim</h2><div class="fields">
+  <label>Speaker<select id="speaker" required></select></label><label>Subject<select id="subject" required></select></label>
+  <label>Predicate<select id="predicate"><option>hair_color</option><option>eye_color</option><option>favorite_food</option><option>keepsake</option><option>hobby</option><option>marital_status</option><option>owns_property</option></select></label>
+  <label>Value<input id="value" required value="yellow" maxlength="200" /></label>
+  <label>Speech act<select id="speech_act"><option>assertion</option><option>recollection</option><option>hearsay</option><option>wish</option><option>dream</option><option>hypothetical</option><option>joke</option><option>lie</option><option>uncertain</option></select></label>
+  <label>Visibility<select id="visibility"><option>public</option><option>private</option></select></label>
+  <label class="full">Original utterance<textarea id="text" required maxlength="2000">My wife has yellow hair.</textarea></label>
+  <div class="full"><button type="submit">Adjudicate and append to ledger</button><div class="notice" id="notice" role="status"></div></div>
+ </div></form>
+</main>
+<footer>Research boundary: this interface receives structured claims; it does not extract facts from natural language or verify real-world assertions. World-event receipts and editorial overrides are available only to trusted host code.</footer>
+<script>
+const $=id=>document.getElementById(id);
+const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
+function put(id,node){$(id).appendChild(node)}
+function clear(id){$(id).replaceChildren()}
+function entry(target,title,desc,meta,tag){const e=el('div','entry');e.appendChild(el('strong','',title));if(tag)e.appendChild(el('span','tag '+tag,' '+tag));if(desc)e.appendChild(el('p','',desc));if(meta)e.appendChild(el('div','meta',meta));put(target,e)}
+let knownEntities=[];
+async function loadCharacter(at){
+ const character=$('lens').value;if(!character)return;
+ const res=await fetch('/api/character?id='+encodeURIComponent(character)+'&at='+encodeURIComponent(at));
+ if(!res.ok)throw new Error('Unable to load character viewpoint');
+ const view=await res.json();clear('character-view');
+ put('character-view',el('div','subhead','Accessible canon'));
+ view.known_canon.forEach(f=>entry('character-view',f.subject+' · '+f.predicate,f.value,f.effective_date));
+ if(!view.known_canon.length)put('character-view',el('p','empty','No accessible canonical facts'));
+ put('character-view',el('div','subhead','Attributed statements (not necessarily believed)'));
+ view.attributed_claims.forEach(c=>entry('character-view',c.speaker+(c.heard?' (heard)':' (said)'),'“'+c.text+'”',c.status));
+ if(!view.attributed_claims.length)put('character-view',el('p','empty','No attributed statements'));
+}
+async function load(){
+ const at=$('at').value||'1875-04-20';const resp=await fetch('/api/state?at='+encodeURIComponent(at));
+ if(!resp.ok)throw new Error('Unable to load state');const data=await resp.json();
+ for(const id of ['canon','claims','events'])clear(id);
+ $('canon-count').textContent=data.canon.length+' facts';$('claim-count').textContent=data.claims.length+' claims';$('event-count').textContent=data.events.length+' events';
+ data.canon.forEach(f=>entry('canon',f.subject+' · '+f.predicate,f.value,`${f.effective_date} / ${f.source_type} / ${f.source_id}`));
+ data.claims.forEach(c=>entry('claims',c.speaker+' → '+c.subject,`“${c.text}”`,`${c.predicate} = ${c.value} / ${c.decision.reason}`,c.decision.status));
+ data.events.slice().reverse().forEach(e=>entry('events','#'+e.seq+' · '+e.event_type,
+   e.payload.text||e.payload.reason||e.payload.evidence||e.payload.name||'',`${e.recorded_at_utc} / ${e.swatch_beat}`));
+ for(const id of ['canon','claims','events'])if(!$(id).children.length)put(id,el('p','empty','Nothing recorded for this view.'));
+ const ids=data.entities.map(x=>x.id).join('|');if(knownEntities.join('|')!==ids){knownEntities=data.entities.map(x=>x.id);
+   for(const select of ['speaker','subject','lens']){clear(select);data.entities.forEach(x=>{const opt=el('option','',x.name);opt.value=x.id;put(select,opt)})}
+   if(knownEntities.includes('bill'))$('speaker').value='bill';if(knownEntities.includes('mara'))$('subject').value='mara';if(knownEntities.includes('ada'))$('lens').value='ada';}
+ await loadCharacter(at);
+}
+$('lens').addEventListener('change',()=>loadCharacter($('at').value).catch(e=>$('notice').textContent=e.message));
+$('refresh').addEventListener('click',()=>load().catch(e=>$('notice').textContent=e.message));
+$('at').addEventListener('change',()=>load().catch(e=>$('notice').textContent=e.message));
+$('claim-form').addEventListener('submit',async e=>{e.preventDefault();const keys=['speaker','subject','predicate','value','text','speech_act','visibility'];
+ const claim=Object.fromEntries(keys.map(k=>[k,$(k).value]));claim.effective_date=$('at').value;try{const res=await fetch('/api/claims',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(claim)});
+ const data=await res.json();if(!res.ok)throw new Error(data.error||'Rejected request');$('notice').textContent=data.decision.status+': '+data.decision.reason;await load();}
+ catch(err){$('notice').textContent=err.message;}});
+load().catch(e=>$('notice').textContent=e.message);
+</script>
+</body>
+</html>

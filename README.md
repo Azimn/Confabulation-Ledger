@@ -58,6 +58,18 @@ Provenance is never hidden. An entry remembers that it began as a confabulation.
 
 Entries are append-only in spirit: a detail stops holding because something *happened* in the world, or because a collision was adjudicated — and either way the change is itself an entry, not a silent edit.
 
+## Who else this is for
+
+Not only simulations. Anyone with an AI companion whose character has a
+fictionalized life — a home, a job, a daily routine, a past that was
+improvised in conversation rather than authored in advance — has this
+problem in miniature. Many companion users keep highly detailed backups,
+but a backup preserves what was saved; it does not by itself keep the
+invented life *consistent*. A ledger of the details that life has
+accumulated — what street she lives on, the coworker she mentioned once,
+the café that became "theirs" — is what lets a fictionalized life stay
+the same life across sessions, platforms, and model swaps.
+
 ## Why this is not the other ledgers
 
 - Not a hallucination filter: nothing here prevents invention, fact-checks it, or punishes it.
@@ -85,3 +97,51 @@ The ledger is load-bearing, not bookkeeping, only if behaviour changes with it:
 ---
 
 *Draft v0.1, 2026-11-01 — prepared by Calibos from Jay's spoken explanation, for Jay's correction.*
+
+---
+
+## Prototype v0.1 (ChatGPT, reviewed by Calibos 2026-11-01)
+
+A deterministic laboratory implementation of one governed version of the
+promotion rule above now lives in this repo (`src/confab_ledger/`):
+append-only SQLite event log, structured candidate claims adjudicated to
+`CANON` / `BELIEF_ONLY` / `PENDING` / `REJECTED`, time-indexed canon
+recomputed from the event stream, trusted simulator `WORLD_EVENT`s with
+receipts, author review/override as new events (never edits), and
+per-character views that keep heard claims attributed instead of true.
+No external dependencies, no LLM calls. 31 unit tests and a 12-case
+deterministic benchmark are included; see `docs/ARCHITECTURE.md` and
+`docs/RESEARCH_PLAN.md`.
+
+```bash
+python -m pip install -e .
+confab-ledger --seed-demo --db ledger.sqlite3   # dashboard on 127.0.0.1:8765
+python -m unittest discover -s tests -v
+python scripts/replay_benchmark.py
+```
+
+**Known divergences from the idea as stated above — Jay's calls, recorded
+here rather than silently resolved:**
+
+1. **The prototype's auto-promotion allowlist does not cover the worked
+   example.** Auto-canon is limited to 12 low-impact predicates (hair/eye
+   colour, favourites, hobby, keepsake, usual drink) asserted in dialogue
+   by the subject's owner or a delegate. Phil's shirt colour, its missing
+   button, clothing, room and other environmental detail — the
+   low-resolution-simulation case this repo exists for — come back
+   `PENDING`. Whether environmental/detail predicates get their own
+   promotion class is the central open design question.
+2. **Narration can never canonize in the prototype** (`source_type !=
+   dialogue` → `BELIEF_ONLY`). The idea above treats an inhabitant's
+   narration as the rendering layer that summons detail; the prototype
+   treats narration as a report *about* the world. These are different
+   channels and the distinction needs drawing, not a default.
+3. **Cross-character invention requires delegation.** A character cannot
+   canonize a detail about another character without a scoped grant
+   (benchmark case: "unlicensed biography"). Plausibly right for a
+   multi-player world; narrower than the single-inhabitant case.
+
+The prototype also answers several of the open questions below in one
+specific way — collisions via receipted world events and editor overrides
+with the seam kept, lies/hearsay/dreams held as attributed claims — which
+is recorded as *a* governed variant, not as settling them.
